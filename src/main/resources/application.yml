@@ -1,0 +1,55 @@
+hibernate:
+  jdbc:
+    time_zone: America/Bogota
+
+server:
+  servlet:
+    context-path: /meli
+  port: 8080
+
+spring:
+  application:
+    version: 1.0.0
+    name: meli
+    description: Prueba técnica MELI
+
+  profiles:
+    active: default
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      #ddl-auto: validate
+      #dialect: org.hibernate.dialect.H2Dialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        generate_statistics: false
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 1
+          time_zone: America/Bogota
+        cache:
+          use_query_cache: false
+          use_second_level_cache: false
+          use_structured_entries: false
+          use_minimal_puts: false
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://ep-empty-hall-a55npy9h.us-east-2.aws.neon.tech/meli?sslmode=require
+    #url: jdbc:h2:mem:testdb
+    username: ${POSTGRESQL_USERNAME:meli_owner}
+    password: ${POSTGRESQL_PASSWORD:}
+    driverClassName: org.postgresql.Driver
+    #driverClassName: org.h2.Driver
+    #initialization-mode: always
+    #continue-on-error: true
+  # default path: h2-console
+  h2:
+    console:
+      path: /h2-ui
+      enabled: false
