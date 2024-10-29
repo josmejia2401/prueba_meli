@@ -1,0 +1,198 @@
+Para el sistema de reservas de tickets para Rapid Ticket, se puede construir un modelo relacional que soporte las funcionalidades necesarias, teniendo en cuenta los diferentes usuarios y sus interacciones con la API. A continuación se presenta el modelo relacional:
+
+Entidades del Modelo Relacional
+Usuario
+
+usuario_id (PK, INT, AUTO_INCREMENT): Identificador único del usuario.
+nombre (VARCHAR): Nombre del usuario.
+email (VARCHAR): Correo electrónico del usuario.
+rol (ENUM: 'admin', 'cliente'): Rol del usuario (quien carga información o realiza reservas).
+Lugar
+
+lugar_id (PK, INT, AUTO_INCREMENT): Identificador único del lugar.
+nombre (VARCHAR): Nombre del lugar (teatro, estadio, campo, etc.).
+direccion (VARCHAR): Dirección del lugar.
+capacidad (INT): Capacidad máxima del lugar.
+Seccion
+
+seccion_id (PK, INT, AUTO_INCREMENT): Identificador único de la sección.
+lugar_id (FK, INT): Identificador del lugar donde se encuentra la sección.
+nombre (VARCHAR): Nombre de la sección (e.g., "Platea", "General").
+precio (DECIMAL): Precio de las entradas para esta sección.
+Show
+
+show_id (PK, INT, AUTO_INCREMENT): Identificador único del show.
+nombre (VARCHAR): Nombre del show.
+descripcion (TEXT): Descripción del show.
+fecha_inicio (DATETIME): Fecha y hora de inicio del show.
+fecha_fin (DATETIME): Fecha y hora de finalización del show.
+lugar_id (FK, INT): Identificador del lugar donde se presenta el show.
+Funcion
+
+funcion_id (PK, INT, AUTO_INCREMENT): Identificador único de la función.
+show_id (FK, INT): Identificador del show asociado.
+fecha_hora (DATETIME): Fecha y hora de la función.
+Butaca
+
+butaca_id (PK, INT, AUTO_INCREMENT): Identificador único de la butaca.
+seccion_id (FK, INT): Identificador de la sección a la que pertenece la butaca.
+numero (VARCHAR): Número de la butaca (puede ser NULL si no aplica).
+disponibilidad (BOOLEAN): Estado de disponibilidad (true = disponible, false = reservado).
+Reserva
+
+reserva_id (PK, INT, AUTO_INCREMENT): Identificador único de la reserva.
+usuario_id (FK, INT): Identificador del usuario que realiza la reserva.
+show_id (FK, INT): Identificador del show asociado.
+funcion_id (FK, INT): Identificador de la función asociada.
+fecha_reserva (TIMESTAMP): Fecha y hora de la reserva.
+estado (ENUM: 'confirmada', 'cancelada'): Estado de la reserva.
+Reserva_Butaca
+
+reserva_butaca_id (PK, INT, AUTO_INCREMENT): Identificador único de la relación.
+reserva_id (FK, INT): Identificador de la reserva.
+butaca_id (FK, INT): Identificador de la butaca reservada.
+Relaciones entre Entidades
+Usuario puede tener muchas Reservas (1
+).
+Lugar tiene muchas Secciones (1
+).
+Seccion tiene muchas Butacas (1
+).
+Show tiene muchas Funciones (1
+).
+Funcion tiene muchas Reservas (1
+).
+Reserva puede incluir muchas Butacas a través de Reserva_Butaca (N
+).
+Reserva está asociada a un único Usuario, un único Show, y una única Funcion (N:1).
+Diagrama Entidad-Relación (ERD)
+plaintext
+Copiar código
+[Usuario] 1 --- N [Reserva] N --- M [Reserva_Butaca] M --- 1 [Butaca]
+     |              |
+     |              |
+     |              |
+     N              1
+  [Show] 1 --- N [Funcion]
+     |
+     1
+  [Lugar] 1 --- N [Seccion]
+Consideraciones
+Control de Concurrencia: Implementar bloqueos optimistas al reservar butacas, garantizando que dos usuarios no puedan reservar la misma butaca simultáneamente.
+Escalabilidad: Asegurarse de que la arquitectura de la API y el modelo de base de datos soporten un alto volumen de tráfico.
+Búsquedas Complejas: Implementar funciones que permitan buscar shows según fechas, precios y ordenar los resultados.
+Este modelo relacional proporciona una base sólida para el desarrollo de la API, asegurando que se pueda gestionar eficientemente la información de shows, funciones y reservas, mientras se aborda la escalabilidad y la concurrencia necesarias para Rapid Ticket.
+
+
+
+
+
+
+
+
+Aquí tienes un modelo relacional en SQL para PostgreSQL que representa la estructura de la base de datos para la plataforma de venta de tickets Rapid Ticket.
+
+Modelo Relacional en SQL
+sql
+Copiar código
+-- Crear la tabla de Usuarios
+CREATE TABLE Usuario (
+    usuario_id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    rol VARCHAR(20) CHECK (rol IN ('admin', 'cliente')) NOT NULL
+);
+
+-- Crear la tabla de Lugares
+CREATE TABLE Lugar (
+    lugar_id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(255) NOT NULL,
+    capacidad INT NOT NULL
+);
+
+-- Crear la tabla de Secciones
+CREATE TABLE Seccion (
+    seccion_id SERIAL PRIMARY KEY,
+    lugar_id INT REFERENCES Lugar(lugar_id) ON DELETE CASCADE,
+    nombre VARCHAR(50) NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL
+);
+
+-- Crear la tabla de Shows
+CREATE TABLE Show (
+    show_id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    fecha_inicio TIMESTAMP NOT NULL,
+    fecha_fin TIMESTAMP NOT NULL,
+    lugar_id INT REFERENCES Lugar(lugar_id) ON DELETE CASCADE
+);
+
+-- Crear la tabla de Funciones
+CREATE TABLE Funcion (
+    funcion_id SERIAL PRIMARY KEY,
+    show_id INT REFERENCES Show(show_id) ON DELETE CASCADE,
+    fecha_hora TIMESTAMP NOT NULL
+);
+
+-- Crear la tabla de Butacas
+CREATE TABLE Butaca (
+    butaca_id SERIAL PRIMARY KEY,
+    seccion_id INT REFERENCES Seccion(seccion_id) ON DELETE CASCADE,
+    numero VARCHAR(10),
+    disponibilidad BOOLEAN DEFAULT TRUE
+);
+
+-- Crear la tabla de Reservas
+CREATE TABLE Reserva (
+    reserva_id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES Usuario(usuario_id) ON DELETE CASCADE,
+    show_id INT REFERENCES Show(show_id) ON DELETE CASCADE,
+    funcion_id INT REFERENCES Funcion(funcion_id) ON DELETE CASCADE,
+    fecha_reserva TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(20) CHECK (estado IN ('confirmada', 'cancelada')) DEFAULT 'confirmada'
+);
+
+-- Crear la tabla de relación entre Reservas y Butacas
+CREATE TABLE Reserva_Butaca (
+    reserva_butaca_id SERIAL PRIMARY KEY,
+    reserva_id INT REFERENCES Reserva(reserva_id) ON DELETE CASCADE,
+    butaca_id INT REFERENCES Butaca(butaca_id) ON DELETE CASCADE
+);
+Explicación de las Tablas
+Usuario: Almacena la información de los usuarios que alimentan la plataforma y aquellos que realizan reservas. Incluye un campo para el rol (admin o cliente).
+
+Lugar: Representa los diferentes lugares (teatros, estadios, etc.) donde se llevan a cabo los shows, incluyendo su capacidad y dirección.
+
+Seccion: Define las secciones dentro de un lugar, cada una con un precio específico.
+
+Show: Almacena información sobre los shows, incluyendo su nombre, descripción y las fechas de inicio y fin.
+
+Funcion: Representa las funciones programadas de un show, con fecha y hora específicas.
+
+Butaca: Define las butacas disponibles en cada sección, junto con su disponibilidad (disponible o reservada).
+
+Reserva: Almacena las reservas realizadas por los usuarios, asociadas a un show y una función, así como el estado de la reserva.
+
+Reserva_Butaca: Tabla de relación que vincula las reservas con las butacas específicas que se han reservado.
+
+Consideraciones Adicionales
+Integridad Referencial: Se han utilizado claves foráneas para garantizar la integridad de los datos entre las tablas.
+Bloqueo Optimista: Implementar lógica en la aplicación para manejar la disponibilidad de butacas y prevenir conflictos al momento de realizar reservas.
+Escalabilidad: Asegúrate de que la infraestructura donde se despliegue la base de datos pueda escalar horizontalmente para manejar fluctuaciones en el tráfico.
+Este modelo relacional proporciona una base robusta para la implementación de la API de reservas de tickets, permitiendo gestionar eficientemente las interacciones y los datos de los usuarios, shows, funciones y reservas.
+
+
+
+[Usuario] 1 --- N [Reserva] N --- M [Reserva_Butaca] M --- 1 [Butaca]
+     |              |
+     |              |
+     |              |
+     N              1
+  [Show] 1 --- N [Funcion]
+     |
+     1
+  [Lugar] 1 --- N [Seccion]
+
+
