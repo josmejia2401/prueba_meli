@@ -1,5 +1,6 @@
 package com.josmejia2401.service;
 
+import com.josmejia2401.dto.SeatReqDTO;
 import com.josmejia2401.dto.SectionReqDTO;
 import com.josmejia2401.dto.SectionResDTO;
 import com.josmejia2401.exceptions.CustomException;
@@ -37,6 +38,9 @@ public class SectionService implements ISectionService {
 		if (req.getName() != null) {
 			parameters.add(String.format("name = %s", req.getName()));
 		}
+		if (req.getPlaceId() != null) {
+			parameters.add(String.format("place_id = %s", req.getPlaceId()));
+		}
 		if (!parameters.isEmpty()) {
 			sql.append(" WHERE ");
 			sql.append(String.join(" AND ", parameters));
@@ -50,12 +54,20 @@ public class SectionService implements ISectionService {
 	@Override
 	public SectionResDTO getById(Long id) {
 		SectionModel model = this.sectionRepository.findById(id).orElseThrow(() -> new CustomException(404, "Elemento no existe."));
-		return modelMapper.map(model, SectionResDTO.class);
+		SectionResDTO response = modelMapper.map(model, SectionResDTO.class);
+		response.setSeats(this.seatService.getAll(SeatReqDTO
+				.builder()
+						.sectionId(model.getId())
+				.build()));
+		return response;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		SectionResDTO model = this.getById(id);
+		if (model.getSeats() != null && !model.getSeats().isEmpty()) {
+			model.getSeats().forEach(p -> seatService.deleteById(p.getId()));
+		}
 		this.sectionRepository.deleteById(model.getId());
 	}
 

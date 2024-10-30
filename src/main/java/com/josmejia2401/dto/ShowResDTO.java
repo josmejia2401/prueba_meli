@@ -17,7 +17,7 @@ public class ShowResDTO {
 	private String description;
 	private Date startDate;
 	private Date endDate;
-	private Long place_id;
+	private Long placeId;
 	private Date createdAt;
 
 	private List<FunctionResDTO> functions;

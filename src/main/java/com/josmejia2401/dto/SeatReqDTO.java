@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Date;
 
@@ -24,4 +25,7 @@ public class SeatReqDTO {
 	@Builder.Default
 	private boolean availability = true;
 	private Date createdAt;
+
+	private Long showId;
+	private Long functionId;
 }

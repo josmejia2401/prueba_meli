@@ -99,4 +99,26 @@ public class SeatController {
 			throw new CustomException(e);
 		}
 	}
+
+	@GetMapping("/available/{showId}/{functionId}")
+	public ResponseEntity<List<SeatResDTO>> getById(@PathVariable("showId") long showId, @PathVariable("functionId") long functionId) {
+		try {
+			List<SeatResDTO> data = this.iSeatService.getAll(SeatReqDTO
+					.builder()
+							.showId(showId)
+							.functionId(functionId)
+					.build());
+			if (data != null) {
+				return new ResponseEntity<>(data, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (CustomException e) {
+			log.error(e);
+			throw e;
+		} catch (Exception e) {
+			log.error(e);
+			throw new CustomException(e);
+		}
+	}
 }

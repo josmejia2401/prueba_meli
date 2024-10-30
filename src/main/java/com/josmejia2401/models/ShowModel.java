@@ -48,7 +48,7 @@ public class ShowModel {
 	private Date endDate;
 
 	@Column(name = "place_id")
-	private Long place_id;
+	private Long placeId;
 
 	@Column(name = "createdAt")
 	@CreationTimestamp

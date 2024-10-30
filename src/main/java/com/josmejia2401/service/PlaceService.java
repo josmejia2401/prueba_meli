@@ -2,6 +2,7 @@ package com.josmejia2401.service;
 
 import com.josmejia2401.dto.PlaceReqDTO;
 import com.josmejia2401.dto.PlaceResDTO;
+import com.josmejia2401.dto.SectionReqDTO;
 import com.josmejia2401.exceptions.CustomException;
 import com.josmejia2401.models.PlaceModel;
 import com.josmejia2401.repository.PlaceRepository;
@@ -52,12 +53,20 @@ public class PlaceService implements IPlaceService {
 	@Override
 	public PlaceResDTO getById(Long id) {
 		PlaceModel model = this.placeRepository.findById(id).orElseThrow(() -> new CustomException(404, "Elemento no existe."));
-		return modelMapper.map(model, PlaceResDTO.class);
+		PlaceResDTO response = modelMapper.map(model, PlaceResDTO.class);
+		response.setSections(this.sectionService.getAll(SectionReqDTO
+				.builder()
+						.placeId(model.getId())
+				.build()));
+		return response;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		PlaceResDTO model = this.getById(id);
+		if (model.getSections() != null && !model.getSections().isEmpty()) {
+			model.getSections().forEach(p -> sectionService.deleteById(p.getId()));
+		}
 		this.placeRepository.deleteById(model.getId());
 	}
 

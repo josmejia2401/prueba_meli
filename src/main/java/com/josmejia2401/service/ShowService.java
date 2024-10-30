@@ -49,7 +49,7 @@ public class ShowService implements IShowService {
 			parameters.add(String.format("start_date <= date '%s'", simpleDateFormat.format(req.getEndDate())));
 		}
 		if (req.getMaxPrice() != null && req.getMinPrice() != null) {
-			parameters.add(String.format("place_id IN (SELECT place_id FROM sections WHERE price <= %s AND price >= %s)", req.getMaxPrice(), req.getMinPrice()));
+			parameters.add(String.format("place_id IN (SELECT place_id FROM sections WHERE price >= %s AND price <= %s)", req.getMinPrice(), req.getMaxPrice()));
 		}
 		if (!parameters.isEmpty()) {
 			sql.append(" WHERE ");
@@ -62,7 +62,12 @@ public class ShowService implements IShowService {
 		Query query = em.createNativeQuery(sql.toString(), ShowModel.class);
 		List<?> results = query.getResultList();
 		Type listType = new TypeToken<List<ShowResDTO>>(){}.getType();
-		return modelMapper.map(results, listType);
+		List<ShowResDTO> outputs = modelMapper.map(results, listType);
+		outputs.forEach(p -> p.setFunctions(functionService.getAll(FunctionReqDTO
+				.builder()
+				.showId(p.getId())
+				.build())));
+		return outputs;
 	}
 
 	@Override
@@ -79,6 +84,9 @@ public class ShowService implements IShowService {
 	@Override
 	public void deleteById(Long id) {
 		ShowResDTO model = this.getById(id);
+		if (model.getFunctions() != null && !model.getFunctions().isEmpty()) {
+			model.getFunctions().forEach(p -> functionService.deleteById(p.getId()));
+		}
 		this.showRepository.deleteById(model.getId());
 	}
 
@@ -99,7 +107,6 @@ public class ShowService implements IShowService {
 	@Override
 	public ShowResDTO create(ShowReqDTO req) {
 		ShowModel model = modelMapper.map(req, ShowModel.class);
-		model.setPlace_id(req.getPlaceId());
 		this.showRepository.saveAndFlush(model);
 		ShowResDTO response = modelMapper.map(model, ShowResDTO.class);
 		if (req.getFunctions() != null && !req.getFunctions().isEmpty()) {
