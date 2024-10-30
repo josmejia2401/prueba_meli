@@ -9,7 +9,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.josmejia2401</groupId>
-	<artifactId>spring-boot-crud</artifactId>
+	<artifactId>spring-boot-meli</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-boot-meli</name>
 	<packaging>jar</packaging>
@@ -102,7 +102,7 @@
 
 	</dependencies>
 	<build>
-		<finalName>spring-boot-crud</finalName>
+		<finalName>spring-boot-meli</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

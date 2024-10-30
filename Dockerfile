@@ -6,10 +6,10 @@ COPY pom.xml /home/app
 RUN mvn -f /home/app/pom.xml clean package
 
 FROM eclipse-temurin:17-jre-alpine
-COPY --from=build /home/app/target/userservices-0.0.1-SNAPSHOT.jar /usr/local/lib/userservices-0.0.1-SNAPSHOT.jar
+COPY --from=build /home/app/target/spring-boot-meli.jar /usr/local/lib/spring-boot-meli.jar
 
 #EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/usr/local/lib/userservices-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/usr/local/lib/spring-boot-meli.jar"]
 
 
 
