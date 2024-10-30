@@ -2,6 +2,7 @@ package com.josmejia2401.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Validated
 public class SectionReqDTO {
 	private long id;
 	@NotNull(message = "El ID del lugar es requerido.")
