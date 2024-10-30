@@ -9,6 +9,6 @@ public interface IPlaceService {
 	List<PlaceResDTO> getAll(PlaceReqDTO req);
 	PlaceResDTO getById(Long id);
 	void deleteById(Long id);
-	void update(PlaceReqDTO req);
+	PlaceResDTO update(PlaceReqDTO req);
 	PlaceResDTO create(PlaceReqDTO req);
 }

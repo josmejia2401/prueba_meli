@@ -83,8 +83,7 @@ public class PlaceController {
 			PlaceResDTO data = this.iPlaceService.getById(id);
 			if (data != null) {
 				req.setId(id);
-				this.iPlaceService.update(req);
-				return new ResponseEntity<PlaceResDTO>(data, HttpStatus.OK);
+				return new ResponseEntity<PlaceResDTO>(this.iPlaceService.update(req), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
@@ -100,13 +99,8 @@ public class PlaceController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
 		try {
-			PlaceResDTO data = this.iPlaceService.getById(id);
-			if (data != null) {
-				this.iPlaceService.deleteById(id);
-				return new ResponseEntity<>(null, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
+			this.iPlaceService.deleteById(id);
+			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (CustomException e) {
 			log.error(e);
 			throw e;

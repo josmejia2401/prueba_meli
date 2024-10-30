@@ -62,11 +62,12 @@ public class PlaceService implements IPlaceService {
 	}
 
 	@Override
-	public void update(PlaceReqDTO req) {
+	public PlaceResDTO update(PlaceReqDTO req) {
 		PlaceResDTO data = this.getById(req.getId());
 		PlaceModel model = modelMapper.map(req, PlaceModel.class);
 		model.setCreatedAt(data.getCreatedAt());
 		this.placeRepository.saveAndFlush(model);
+		return modelMapper.map(model, PlaceResDTO.class);
 	}
 
 	@Override

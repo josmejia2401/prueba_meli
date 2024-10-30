@@ -43,11 +43,12 @@ public class SeatService implements ISeatService {
 	}
 
 	@Override
-	public void update(SeatReqDTO req) {
+	public SeatResDTO update(SeatReqDTO req) {
 		SeatResDTO data = this.getById(req.getId());
 		SeatModel model = modelMapper.map(req, SeatModel.class);
 		model.setCreatedAt(data.getCreatedAt());
 		this.seatRepository.saveAndFlush(model);
+		return modelMapper.map(model, SeatResDTO.class);
 	}
 
 	@Override

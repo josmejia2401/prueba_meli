@@ -60,11 +60,12 @@ public class SectionService implements ISectionService {
 	}
 
 	@Override
-	public void update(SectionReqDTO req) {
+	public SectionResDTO update(SectionReqDTO req) {
 		SectionResDTO data = this.getById(req.getId());
 		SectionModel model = modelMapper.map(req, SectionModel.class);
 		model.setCreatedAt(data.getCreatedAt());
 		this.sectionRepository.saveAndFlush(model);
+		return modelMapper.map(model, SectionResDTO.class);
 	}
 
 	@Override

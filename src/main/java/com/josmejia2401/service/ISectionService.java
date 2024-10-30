@@ -9,6 +9,6 @@ public interface ISectionService {
 	List<SectionResDTO> getAll(SectionReqDTO req);
 	SectionResDTO getById(Long id);
 	void deleteById(Long id);
-	void update(SectionReqDTO req);
+	SectionResDTO update(SectionReqDTO req);
 	SectionResDTO create(SectionReqDTO req);
 }

@@ -9,6 +9,6 @@ public interface ISeatService {
 	List<SeatResDTO> getAll(SeatReqDTO req);
 	SeatResDTO getById(Long id);
 	void deleteById(Long id);
-	void update(SeatReqDTO req);
+	SeatResDTO update(SeatReqDTO req);
 	SeatResDTO create(SeatReqDTO req);
 }
