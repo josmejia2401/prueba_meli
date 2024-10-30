@@ -1,9 +1,9 @@
 package com.josmejia2401.controller;
 
-import com.josmejia2401.dto.PlaceReqDTO;
-import com.josmejia2401.dto.PlaceResDTO;
+import com.josmejia2401.dto.SectionReqDTO;
+import com.josmejia2401.dto.SectionResDTO;
 import com.josmejia2401.exceptions.CustomException;
-import com.josmejia2401.service.IPlaceService;
+import com.josmejia2401.service.ISectionService;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,23 +15,19 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping("/api/v1/places")
+@RequestMapping("/api/v1/sections")
 @Log4j2
-public class PlaceController {
+public class SectionController {
 
 	@Autowired
-	private IPlaceService iPlaceService;
+	private ISectionService iSectionService;
 
 	@GetMapping("")
-	public ResponseEntity<List<PlaceResDTO>> getAll(@RequestParam(required = false) String name,
-													@RequestParam(required = false) String address,
-													@RequestParam(required = false) Long capacity) {
+	public ResponseEntity<List<SectionResDTO>> getAll(@RequestParam(required = false) String name) {
 		try {
-			List<PlaceResDTO> models = this.iPlaceService.getAll(PlaceReqDTO
+			List<SectionResDTO> models = this.iSectionService.getAll(SectionReqDTO
 					.builder()
 							.name(name)
-							.address(address)
-							.capacity(capacity)
 					.build());
 			if (models.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -47,9 +43,9 @@ public class PlaceController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<PlaceResDTO> getById(@PathVariable("id") long id) {
+	public ResponseEntity<SectionResDTO> getById(@PathVariable("id") long id) {
 		try {
-			PlaceResDTO data = this.iPlaceService.getById(id);
+			SectionResDTO data = this.iSectionService.getById(id);
 			if (data != null) {
 				return new ResponseEntity<>(data, HttpStatus.OK);
 			} else {
@@ -65,9 +61,9 @@ public class PlaceController {
 	}
 
 	@PostMapping("")
-	public ResponseEntity<PlaceResDTO> create(@Valid @RequestBody PlaceReqDTO req) {
+	public ResponseEntity<SectionResDTO> create(@Valid @RequestBody SectionReqDTO req) {
 		try {
-			return new ResponseEntity<>(this.iPlaceService.create(req), HttpStatus.CREATED);
+			return new ResponseEntity<>(this.iSectionService.create(req), HttpStatus.CREATED);
 		} catch (CustomException e) {
 			log.error(e);
 			throw e;
@@ -78,10 +74,10 @@ public class PlaceController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<PlaceResDTO> updateById(@PathVariable("id") long id, @Valid @RequestBody PlaceReqDTO req) {
+	public ResponseEntity<SectionResDTO> updateById(@PathVariable("id") long id, @Valid @RequestBody SectionReqDTO req) {
 		try {
 			req.setId(id);
-			return new ResponseEntity<PlaceResDTO>(this.iPlaceService.update(req), HttpStatus.OK);
+			return new ResponseEntity<SectionResDTO>(this.iSectionService.update(req), HttpStatus.OK);
 		} catch (CustomException e) {
 			log.error(e);
 			throw e;
@@ -94,7 +90,7 @@ public class PlaceController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
 		try {
-			this.iPlaceService.deleteById(id);
+			this.iSectionService.deleteById(id);
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (CustomException e) {
 			log.error(e);

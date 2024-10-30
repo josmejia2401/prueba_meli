@@ -99,6 +99,7 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>spring-boot-crud</finalName>
