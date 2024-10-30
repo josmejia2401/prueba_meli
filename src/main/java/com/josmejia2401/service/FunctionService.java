@@ -32,6 +32,9 @@ public class FunctionService implements IFunctionService {
 	@Override
 	public List<FunctionResDTO> getAll(FunctionReqDTO req) {
 		StringBuilder sql = new StringBuilder("SELECT * FROM functions");
+		if (req.getShowId() != null) {
+			sql.append(String.format(" WHERE show_id = %s", req.getShowId()));
+		}
 		Query query = em.createNativeQuery(sql.toString(), FunctionModel.class);
 		List<?> results = query.getResultList();
 		Type listType = new TypeToken<List<FunctionResDTO>>(){}.getType();

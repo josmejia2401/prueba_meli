@@ -1,5 +1,6 @@
 package com.josmejia2401.service;
 
+import com.josmejia2401.dto.FunctionReqDTO;
 import com.josmejia2401.dto.ShowFilterReqDTO;
 import com.josmejia2401.dto.ShowReqDTO;
 import com.josmejia2401.dto.ShowResDTO;
@@ -33,7 +34,7 @@ public class ShowService implements IShowService {
 	@Autowired
 	private ShowRepository showRepository;
 	@Autowired
-	private IFunctionService sectionService;
+	private IFunctionService functionService;
 
 	@Override
 	public List<ShowResDTO> getAll(ShowFilterReqDTO req) {
@@ -67,7 +68,12 @@ public class ShowService implements IShowService {
 	@Override
 	public ShowResDTO getById(Long id) {
 		ShowModel model = this.showRepository.findById(id).orElseThrow(() -> new CustomException(404, "Elemento no existe."));
-		return modelMapper.map(model, ShowResDTO.class);
+		ShowResDTO response = modelMapper.map(model, ShowResDTO.class);
+		response.setFunctions(functionService.getAll(FunctionReqDTO
+				.builder()
+						.showId(response.getId())
+				.build()));
+		return response;
 	}
 
 	@Override
@@ -82,7 +88,12 @@ public class ShowService implements IShowService {
 		ShowModel model = modelMapper.map(req, ShowModel.class);
 		model.setCreatedAt(data.getCreatedAt());
 		this.showRepository.saveAndFlush(model);
-		return modelMapper.map(model, ShowResDTO.class);
+		ShowResDTO response = modelMapper.map(model, ShowResDTO.class);
+		if (req.getFunctions() != null && !req.getFunctions().isEmpty()) {
+			req.getFunctions().forEach(p -> p.setShowId(response.getId()));
+			response.setFunctions(req.getFunctions().stream().map(p -> this.functionService.create(p)).toList());
+		}
+		return response;
 	}
 
 	@Override
@@ -93,7 +104,7 @@ public class ShowService implements IShowService {
 		ShowResDTO response = modelMapper.map(model, ShowResDTO.class);
 		if (req.getFunctions() != null && !req.getFunctions().isEmpty()) {
 			req.getFunctions().forEach(p -> p.setShowId(response.getId()));
-			response.setFunctions(req.getFunctions().stream().map(p -> this.sectionService.create(p)).toList());
+			response.setFunctions(req.getFunctions().stream().map(p -> this.functionService.create(p)).toList());
 		}
 		return response;
 	}
