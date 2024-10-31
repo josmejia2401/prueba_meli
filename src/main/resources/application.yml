@@ -53,3 +53,7 @@ spring:
     console:
       path: /h2-ui
       enabled: false
+
+springdoc:
+  api-docs:
+    path: /api-docs

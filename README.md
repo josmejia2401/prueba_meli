@@ -48,6 +48,11 @@ La base de datos está estructurada en varias tablas:
 
 ## Endpoints de la API
 
+En los siguientes EndPoints se define la documentación de los recursos web expuestos para resolver la iniciativa o prueba técnica:
+
+- http://localhost:8080/meli/swagger-ui/index.html
+- http://localhost:8080/meli/api-docs
+
 ### 1. Listar Shows
 
 **GET** `/shows`
@@ -136,3 +141,6 @@ El código fuente y la documentación adicional se pueden encontrar en el siguie
 ---
 
 Este archivo `README.md` proporciona una visión general completa de la API de Rapid Ticket, incluyendo sus características, tecnologías utilizadas y cómo ejecutar y probar el proyecto.
+
+
+
