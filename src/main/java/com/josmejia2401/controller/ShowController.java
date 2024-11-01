@@ -1,10 +1,14 @@
 package com.josmejia2401.controller;
 
-import com.josmejia2401.dto.ShowFilterReqDTO;
-import com.josmejia2401.dto.ShowReqDTO;
-import com.josmejia2401.dto.ShowResDTO;
+import com.josmejia2401.dto.*;
+import com.josmejia2401.exceptions.CustomErrorResponse;
 import com.josmejia2401.exceptions.CustomException;
 import com.josmejia2401.service.IShowService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,14 @@ public class ShowController {
 	@Autowired
 	private IShowService iShowService;
 
+	@Operation(
+			summary = "Recupera los elementos",
+			description = "Método GET para recuperar los elementos por filtros de búsqueda",
+			tags = { "shows", "get" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = PlaceResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@GetMapping("")
 	public ResponseEntity<List<ShowResDTO>> getAll(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)  Date startDate,
 													@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate,
@@ -53,6 +65,14 @@ public class ShowController {
 		}
 	}
 
+	@Operation(
+			summary = "Recupera un elemento por ID",
+			description = "Método GET para recuperar un elemento por ID",
+			tags = { "show", "get" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ShowResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@GetMapping("/{id}")
 	public ResponseEntity<ShowResDTO> getById(@PathVariable("id") long id) {
 		try {
@@ -71,6 +91,14 @@ public class ShowController {
 		}
 	}
 
+	@Operation(
+			summary = "Crea un elemento",
+			description = "Método POST para crear un elemento",
+			tags = { "show", "post" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ShowResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@PostMapping("")
 	public ResponseEntity<ShowResDTO> create(@Valid @RequestBody ShowReqDTO req) {
 		try {
@@ -84,6 +112,14 @@ public class ShowController {
 		}
 	}
 
+	@Operation(
+			summary = "Actualizar un elemento por ID",
+			description = "Método PUT para actualizar un elemento por ID",
+			tags = { "show", "put" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ShowResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@PutMapping("/{id}")
 	public ResponseEntity<ShowResDTO> updateById(@PathVariable("id") long id, @Valid @RequestBody ShowReqDTO req) {
 		try {
@@ -98,6 +134,14 @@ public class ShowController {
 		}
 	}
 
+	@Operation(
+			summary = "Eliminar un elemento por ID",
+			description = "Método DELETE para eliminar un elemento por ID",
+			tags = { "show", "delete" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
 		try {

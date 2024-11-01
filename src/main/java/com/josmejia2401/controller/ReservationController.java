@@ -1,11 +1,11 @@
 package com.josmejia2401.controller;
 
-import com.josmejia2401.dto.PlaceResDTO;
-import com.josmejia2401.dto.SeatReqDTO;
-import com.josmejia2401.dto.SeatResDTO;
+import com.josmejia2401.dto.ReservationReqDTO;
+import com.josmejia2401.dto.ReservationResDTO;
+import com.josmejia2401.dto.UserReqDTO;
 import com.josmejia2401.exceptions.CustomErrorResponse;
 import com.josmejia2401.exceptions.CustomException;
-import com.josmejia2401.service.ISeatService;
+import com.josmejia2401.service.IReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,26 +22,34 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping("/api/v1/seats")
+@RequestMapping("/api/v1/reservations")
 @Log4j2
-public class SeatController {
+public class ReservationController {
 
 	@Autowired
-	private ISeatService iSeatService;
+	private IReservationService iReservationService;
 
 	@Operation(
 			summary = "Recupera los elementos",
 			description = "Método GET para recuperar los elementos por filtros de búsqueda",
-			tags = { "seats", "get" })
+			tags = { "reservations", "get" })
 	@ApiResponses({
-			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = PlaceResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ReservationResDTO.class), mediaType = "application/json") }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
 			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@GetMapping("")
-	public ResponseEntity<List<SeatResDTO>> getAll() {
+	public ResponseEntity<List<ReservationResDTO>> getAll(@RequestParam(required = false) Long userId,
+														  @RequestParam(required = false) Long showId,
+														  @RequestParam(required = false) Long functionId) {
 		try {
-			List<SeatResDTO> models = this.iSeatService.getAll(SeatReqDTO
+			List<ReservationResDTO> models = this.iReservationService.getAll(ReservationReqDTO
 					.builder()
+							.user(UserReqDTO
+									.builder()
+									.id(userId)
+									.build())
+							.showId(showId)
+							.functionId(functionId)
 					.build());
 			if (models.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -59,15 +67,15 @@ public class SeatController {
 	@Operation(
 			summary = "Recupera un elemento por ID",
 			description = "Método GET para recuperar un elemento por ID",
-			tags = { "seat", "get" })
+			tags = { "reservations", "get" })
 	@ApiResponses({
-			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = SeatResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ReservationResDTO.class), mediaType = "application/json") }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
 			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@GetMapping("/{id}")
-	public ResponseEntity<SeatResDTO> getById(@PathVariable("id") long id) {
+	public ResponseEntity<ReservationResDTO> getById(@PathVariable("id") long id) {
 		try {
-			SeatResDTO data = this.iSeatService.getById(id);
+			ReservationResDTO data = this.iReservationService.getById(id);
 			if (data != null) {
 				return new ResponseEntity<>(data, HttpStatus.OK);
 			} else {
@@ -85,15 +93,15 @@ public class SeatController {
 	@Operation(
 			summary = "Crea un elemento",
 			description = "Método POST para crear un elemento",
-			tags = { "seat", "post" })
+			tags = { "reservations", "post" })
 	@ApiResponses({
-			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = SeatResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ReservationResDTO.class), mediaType = "application/json") }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
 			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@PostMapping("")
-	public ResponseEntity<SeatResDTO> create(@Valid @RequestBody SeatReqDTO req) {
+	public ResponseEntity<ReservationResDTO> create(@Valid @RequestBody ReservationReqDTO req) {
 		try {
-			return new ResponseEntity<>(this.iSeatService.create(req), HttpStatus.CREATED);
+			return new ResponseEntity<>(this.iReservationService.create(req), HttpStatus.CREATED);
 		} catch (CustomException e) {
 			log.error(e);
 			throw e;
@@ -106,16 +114,16 @@ public class SeatController {
 	@Operation(
 			summary = "Actualizar un elemento por ID",
 			description = "Método PUT para actualizar un elemento por ID",
-			tags = { "seat", "put" })
+			tags = { "reservations", "put" })
 	@ApiResponses({
-			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = SeatResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ReservationResDTO.class), mediaType = "application/json") }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
 			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@PutMapping("/{id}")
-	public ResponseEntity<SeatResDTO> updateById(@PathVariable("id") long id, @Valid @RequestBody SeatReqDTO req) {
+	public ResponseEntity<ReservationResDTO> updateById(@PathVariable("id") long id, @Valid @RequestBody ReservationReqDTO req) {
 		try {
 			req.setId(id);
-			return new ResponseEntity<SeatResDTO>(this.iSeatService.update(req), HttpStatus.OK);
+			return new ResponseEntity<ReservationResDTO>(this.iReservationService.update(req), HttpStatus.OK);
 		} catch (CustomException e) {
 			log.error(e);
 			throw e;
@@ -128,7 +136,7 @@ public class SeatController {
 	@Operation(
 			summary = "Eliminar un elemento por ID",
 			description = "Método DELETE para eliminar un elemento por ID",
-			tags = { "seat", "delete" })
+			tags = { "reservations", "delete" })
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema()) }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
@@ -136,38 +144,8 @@ public class SeatController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
 		try {
-			this.iSeatService.deleteById(id);
+			this.iReservationService.deleteById(id);
 			return new ResponseEntity<>(null, HttpStatus.OK);
-		} catch (CustomException e) {
-			log.error(e);
-			throw e;
-		} catch (Exception e) {
-			log.error(e);
-			throw new CustomException(e);
-		}
-	}
-
-	@Operation(
-			summary = "Obtener butacas disponibles",
-			description = "Método GET para obtener butacas disponibles",
-			tags = { "seat", "put" })
-	@ApiResponses({
-			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = SeatResDTO.class), mediaType = "application/json") }),
-			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
-			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
-	@GetMapping("/available/{showId}/{functionId}")
-	public ResponseEntity<List<SeatResDTO>> getById(@PathVariable("showId") long showId, @PathVariable("functionId") long functionId) {
-		try {
-			List<SeatResDTO> data = this.iSeatService.getAll(SeatReqDTO
-					.builder()
-							.showId(showId)
-							.functionId(functionId)
-					.build());
-			if (data != null) {
-				return new ResponseEntity<>(data, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
 		} catch (CustomException e) {
 			log.error(e);
 			throw e;

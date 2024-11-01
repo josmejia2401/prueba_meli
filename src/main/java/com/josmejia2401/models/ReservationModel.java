@@ -51,7 +51,7 @@ public class ReservationModel {
 	 * (ENUM: 'confirmada', 'cancelada'): Estado de la reserva.
 	 */
 	@Column(name = "status")
-	private Long status;
+	private String status;
 
 	@Column(name = "created_at")
 	@CreationTimestamp

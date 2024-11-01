@@ -1,12 +1,12 @@
 package com.josmejia2401.utils;
 
 public enum Status {
-	INICIADA("INICIADA", 1), EN_PROCESP("EN_PROCESO", 2), TERMINADA("TERMINADA", 4);
+	CONFIRMADA("confirmada", 1L), CANCELADA("cancelada", 2L);
 
 	private String name;
-	private int id;
+	private Long id;
 
-	private Status(String name, int id) {
+	private Status(String name, Long id) {
 		this.name = name;
 		this.id = id;
 	}
@@ -15,7 +15,7 @@ public enum Status {
 		return name;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 

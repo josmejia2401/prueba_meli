@@ -1,9 +1,14 @@
 package com.josmejia2401.controller;
 
-import com.josmejia2401.dto.SectionReqDTO;
-import com.josmejia2401.dto.SectionResDTO;
+import com.josmejia2401.dto.*;
+import com.josmejia2401.exceptions.CustomErrorResponse;
 import com.josmejia2401.exceptions.CustomException;
 import com.josmejia2401.service.ISectionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +27,14 @@ public class SectionController {
 	@Autowired
 	private ISectionService iSectionService;
 
+	@Operation(
+			summary = "Recupera los elementos",
+			description = "Método GET para recuperar los elementos por filtros de búsqueda",
+			tags = { "sections", "get" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = SectionResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@GetMapping("")
 	public ResponseEntity<List<SectionResDTO>> getAll(@RequestParam(required = false) String name) {
 		try {
@@ -42,6 +55,14 @@ public class SectionController {
 		}
 	}
 
+	@Operation(
+			summary = "Recupera un elemento por ID",
+			description = "Método GET para recuperar un elemento por ID",
+			tags = { "seat", "get" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = SectionResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@GetMapping("/{id}")
 	public ResponseEntity<SectionResDTO> getById(@PathVariable("id") long id) {
 		try {
@@ -60,6 +81,14 @@ public class SectionController {
 		}
 	}
 
+	@Operation(
+			summary = "Crea un elemento",
+			description = "Método POST para crear un elemento",
+			tags = { "section", "post" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = SectionResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@PostMapping("")
 	public ResponseEntity<SectionResDTO> create(@Valid @RequestBody SectionReqDTO req) {
 		try {
@@ -73,6 +102,14 @@ public class SectionController {
 		}
 	}
 
+	@Operation(
+			summary = "Actualizar un elemento por ID",
+			description = "Método PUT para actualizar un elemento por ID",
+			tags = { "section", "put" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = SectionResDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@PutMapping("/{id}")
 	public ResponseEntity<SectionResDTO> updateById(@PathVariable("id") long id, @Valid @RequestBody SectionReqDTO req) {
 		try {
@@ -87,6 +124,14 @@ public class SectionController {
 		}
 	}
 
+	@Operation(
+			summary = "Eliminar un elemento por ID",
+			description = "Método DELETE para eliminar un elemento por ID",
+			tags = { "section", "delete" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema(implementation = CustomErrorResponse.class), mediaType = "application/json") }) })
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
 		try {
