@@ -66,7 +66,7 @@ En los siguientes EndPoints se define la documentación de los recursos web expu
 
 ### 2. Consultar Disponibilidad de Butacas
 
-**GET** `/shows/{showId}/functions/{funcionId}/seats`
+**GET** `/seats/available/{showId}/{funcionId}`
 
 **Respuesta**:
 - ID de butaca
@@ -92,31 +92,29 @@ En los siguientes EndPoints se define la documentación de los recursos web expu
 
 ## Control de Concurrencia
 
-La API implementa **bloqueos optimistas** para asegurar que dos clientes no puedan reservar la misma localidad. Si una butaca ya fue reservada, la API devolverá un error de conflicto (`HTTP 409`).
+Si una butaca ya fue reservada, la API devolverá un error de conflicto (`HTTP 409`).
 
 ## Pruebas
 
 Para asegurar la calidad del código, se recomienda usar:
 
-- **Pruebas Unitarias**: Jest (Node.js)
-- **Pruebas de Integración**: Jest (Node.js)
-- **Pruebas de Carga**: Artillery o Gatling
+- **Pruebas Unitarias**: Mockito
 
 ## Despliegue en la Nube
 
-La API debe ser desplegada utilizando contenedores Docker y orquestación con Kubernetes, lo que permite escalar horizontalmente según la demanda.
+La API debe ser desplegada utilizando contenedores Docker en render con una capa gratuita.
 
 ## Instrucciones para Ejecutar
 
 1. Clonar el repositorio:
    ```bash
-   git clone [URL del repositorio]
-   cd rapid-ticket
+   git clone https://github.com/josmejia2401/spring-boot-meli.git
+   cd spring-boot-meli
    ```
 
 2. Instalar dependencias:
    ```bash
-   npm install
+   mvn clean install
    ```
 
 3. Configurar variables de entorno:
@@ -124,19 +122,20 @@ La API debe ser desplegada utilizando contenedores Docker y orquestación con Ku
 
 4. Iniciar la aplicación:
    ```bash
-   npm start
+   java -jar target/spring-boot-meli.jar
    ```
 
 5. Ejecutar pruebas:
    ```bash
-   npm test
+   mvn -Dtest=SeosSdkAutomationApplicationTests test
+   mvn exec:java -Dexec.mainClass="com.josmejia2401.Application" -Dexec.classpathScope=test
    ```
 
 ## Repositorio
 
 El código fuente y la documentación adicional se pueden encontrar en el siguiente enlace:
 
-[Repositorio de Rapid Ticket](https://github.com/tu_usuario/rapid-ticket)
+[Repositorio de Rapid Ticket](https://github.com/josmejia2401/spring-boot-meli.git)
 
 ---
 
